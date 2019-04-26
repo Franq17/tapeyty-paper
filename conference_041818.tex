@@ -15,47 +15,47 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
-\title{Solución al problema de recolección de residuos usando técnicas GIS y algoritmos de optimización - TapeYty\\
-% \title{Un diseño de arquitectura SIG para resolver la recolección de residuos sólidos basado en el problema del cartero rural abierto, TapeYty\\
-% \title{Un SIG para resolver la recolección de residuos sólidos basado en el problema del cartero rural abierto, TapeYty\\
-% \title{Una herramienta diseño de arquitectura SIG para resolver la recolección de residuos sólidos basado en el problema del cartero rural abierto, TapeYty\\
-% \thanks{Identify applicable funding agency here. If none, delete this.}
+\title{TapeYty - Software for routing management of urban waste collection using GIS modelling\\
+% \title{A solution to the waste collection' problem based on GIS techniques and combinatorial optimization algorithms\\
+% A decision support aproach for Waste Collection Service (Ej de otro paper)
 }
 
-\author{\IEEEauthorblockN{Franciso Quiñonez\IEEEauthorrefmark{1},
+\author{\IEEEauthorblockN{Francisco Quiñónez\IEEEauthorrefmark{1},
 Andrea Benítez\IEEEauthorrefmark{2}, María E. García-Díaz\IEEEauthorrefmark{3}, 
-Diego Pinto-Roa\IEEEauthorrefmark{4} y
+Diego P. Pinto-Roa\IEEEauthorrefmark{4} y
 Jorge Meza\IEEEauthorrefmark{5}}
 \IEEEauthorblockA{
 Universidad Nacional de Asunción \\
-San Lorenzo, Paraguay \\
+Asunción, Paraguay \\
 \IEEEauthorrefmark{1}fquinonez@pol.una.py,
 \IEEEauthorrefmark{2}abenitez@pol.una.py,
 \IEEEauthorrefmark{3}mgarcia@pol.una.py,
 \IEEEauthorrefmark{4}dpinto@pol.una.py,
-\IEEEauthorrefmark{5}jorgemez@pol.una.py}}
+\IEEEauthorrefmark{5}jmeza@pol.una.py}}
 
 \maketitle
 
 \begin{abstract}
-En este trabajo se propone el desarrollo de una herramienta que optimice el camino seguido por los vehículos de recolección de basura domiciliaria de la ciudad de Asunción mediante técnicas de programación matemáticas, y consecuentemente, genere beneficios principalmente en los aspectos económicos y ambientales. Esta herramienta es denominada de ahora en más \textit{TapeYty}. En la ciudad Asunción, la cantidad de personas que convergen a diario trae consigo una alta generación de residuos y esto hace que la complejidad en la gestión de la basura sea cada vez mayor. Se resuelve el problema de enrutamiento como un problema del cartero rural abierto dirigido, minimizando la distancia a recorrer por los vehículos recolectores y luego se realiza una búsqueda en profundidad para obtener su secuencia. Se implementa una herramienta GIS que permite la gestión de la red de rutas, que permite actualizar el sentido de las calles, en caso de estar inhabilitadas y si no es necesario pasar por alguna de estas calles.
+\textit{TapeYty} is a tool developed to calculate optimal paths for urban garbage collection vehicles in the Asunción city. This tool generates benefits mainly in the economic and environmental aspects of the city where a large number of people brings a high generation of waste. This makes the complexity of garbage management even greater. The routing problem is treated as the open rural postman problem which seeks to minimize the distance to be traveled by the collection vehicles. To achieve the objective \textit{TapeYty} is based on mathematical programming techniques and Geographical Informatiom System (GIS) tool which allows the management of the route network to be able to update the road way and their state of blocked or nonblocked. This implies that when changes of state of the streets \textit{TapeYty} modifies the graph that represents the road network and re-calculates the solutions providing new optimal routes to each vehicle of collection. The tool has provided solutions that save on average 20\% of distance traveled compared to current tour.
+% En la ciudad Asunción, la cantidad de personas que convergen a diario trae consigo una alta generación de residuos y esto hace que la complejidad en la gestión de la basura sea cada vez mayor. Se aborda el problema de enrutamiento como un problema del cartero rural abierto dirigido, minimizando la distancia a recorrer por los vehículos recolectores y luego se realiza una búsqueda en profundidad para obtener su secuencia. Para lograr el objetivo \textit{TapeYty} se basa en técnicas de programación matemáticas y herramienta GIS lo que permite la gestión de la red de rutas al poder actualizar el sentido de las calles, inhabilitar calles, agregar restricciones de giro o de continuar el sentido (contramano). Esto implica que ante cambios de estado de las calles \textit{TapeYty} re-calcula las soluciones y provee el nuevo recorrido óptimo a cada vehículo de recolección.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Gestión de Residuos Sólidos, Algoritmo de Optimización, Sistemas de Información Geográfica, Problema del Cartero Rural Abierto, Programación Entera, Secuenciación, Servidor de Mapa
+Urban Solid Waste Collection, Optimization Algorithms, Geographical Information System, Open Rural Postman Problem.
+% Recolección de Residuos Sólidos Urbanos, Algoritmo de Optimización, Sistemas de Información Geográfica, Problema del Cartero Rural Abierto, Secuenciación, Servidor de Mapa
 \end{IEEEkeywords}
 
 \section{Introducción}
-El impacto ambiental que provocan los residuos sólidos municipales es objeto de atención especial en las últimas décadas. La eliminación de los residuos sólidos urbanos es una preocupación creciente en todo el mundo, sin importar el tamaño ni las características socio-económicas de una ciudad. Muchas ciudades se han visto obligadas a evaluar su programa de gestión de residuos sólidos y examinar su relación costo-efectividad en términos de recolección, transporte, tratamiento y eliminación \cite{Karadimas2007OptimalAlgorithm}.
+El impacto ambiental que provocan los residuos sólidos municipales ha sido objeto de atención especial en las últimas décadas. La eliminación de los residuos sólidos urbanos es una preocupación creciente en todo el mundo, sin importar el tamaño ni las características socio-económicas de una ciudad. Muchas ciudades se han visto obligadas a evaluar su programa de gestión de residuos sólidos y examinar su relación costo-efectividad en términos de recolección, transporte, tratamiento y eliminación \cite{Karadimas2007OptimalAlgorithm}.
 
-En la Gestión de Residuos Sólidos (SWM, \textit{Solid Waste Management}) se estima que de la cantidad total de dinero destinado para su recogida, transporte y eliminación, aproximadamente el 60-80\% se gasta en la fase de Recolección de Residuos Sólidos \cite{Tavares2009OptimisationModelling} \cite{Dogan2003Report:Istanbul}. Por lo general, la fase de recolección en los países en desarrollo se basa en la experiencia práctica y los métodos intuitivos, dando lugar a prácticas ineficientes y costosas, que afectan tanto a la salud pública como al medio ambiente. Por ende, incluso una pequeña mejora en la operación de recogida puede dar lugar a un ahorro importante en el costo total, motivo por el cual muchos municipios se han esforzado en mejorar la gestión de la basura. En la ciudad de Asunción, capital de la República del Paraguay, la mayor parte del presupuesto total de la municipalidad, correspondiente al año 2017, fue destinado a los programas de acción. A su vez, dentro de estos programas de acción, fue el servicio de calidad en recolección y limpieza el que se llevó la mayor parte y con una diferencia significativa sobre las demás  \cite{MunicipalidaddeAsuncion2017Presupuesto2017}.
+En la Gestión de Residuos Sólidos (SWM, \textit{Solid Waste Management}) se estima que de la cantidad total de dinero destinado para su recogida, transporte y eliminación, aproximadamente el 60-80\% se gasta en la fase de Recolección de Residuos Sólidos \cite{Tavares2009OptimisationModelling} \cite{Dogan2003Report:Istanbul}. Por lo general, la fase de recolección en los países en desarrollo se basa en la experiencia práctica y en métodos intuitivos, dando lugar a prácticas ineficientes y costosas, que afectan tanto a la salud pública como al medio ambiente. Por ende, incluso una pequeña mejora en la operación de recogida puede dar lugar a un ahorro importante en el costo total, motivo por el cual muchos municipios se han esforzado en mejorar la gestión de la basura. En la ciudad de Asunción, capital de la República del Paraguay, la mayor parte del presupuesto total de la municipalidad, correspondiente al año 2017, fue destinado a los programas de acción. A su vez, dentro de estos programas de acción, fue el servicio de calidad en recolección y limpieza el que se llevó la mayor parte y con una diferencia significativa sobre las demás  \cite{MunicipalidaddeAsuncion2017Presupuesto2017}.
 
 Cuando se habla de la problemática de la gestión de residuos sólidos, es sabido que existen numerosos estudios y trabajos científicos con el propósito de resolver usando objetivos económicos y ambientales como criterios para la toma de decisiones. Hasta hoy día, se estudian distintas técnicas que puedan permitir mejorar el proceso. No existe un conjunto universal de reglas que puedan aplicarse a todas las situaciones \cite{Tchobanoglous1993IntegratedIssues}.
 
 En la literatura, las soluciones al ruteo de la recolección de residuos sólidos urbanos se han planteado como distintos tipos de problemas, y están principalmente definidos en dos categorías: a) Problema de Enrutamiento de Vehículo Capacitado (CVRP, \textit{Capacitated Vehicle Routing Problem}), en donde se define una serie de nodos con demanda positiva cuyo objetivo es encontrar el mejor recorrido que cubra la totalidad de los nodos y; por otro lado, b) Problema de Enrutamiento de Arco Capacitado (CARP, \textit{Capacitated Arc Routing Problem}), en donde existe una serie de arcos predefinidos con demanda positiva o nula y el objetivo consiste en encontrar los mejores recorridos cubriendo todos los arcos requeridos \cite{Tirkolaee2018ATime}.
 
 % VRP CVRP VRPTW
-En \cite{Akhtar2017BacktrackingOptimization} se desarrolló un Algoritmo de Búsqueda Hacia Atrás meta-heurístico (BSA, \textit{Backtracking Search Algorithm}) en un modelo CVRP con el concepto de contenedores inteligentes para encontrar las mejores soluciones de rutas de recolección. El estudio introduce el concepto de Umbral de Nivel de Residuos en contenedores (TWL, \textit{Threshold Waste Level}) para reducir el número que deben ser vaciados al encontrar un rango óptimo de llenado, minimizando así la distancia, y consecuentemente reducir el combustible utilizado y las emisiones de gases.
+En los enfoques que abordan el problema como un CVRP se encuentran varios trabajos \cite{Akhtar2017BacktrackingOptimization,Ombuki-Berman2007WASTEALGORITHMS,Kim2006WasteWindows,Billa2014GISOptimization,Karadimas2007OptimalAlgorithm}. En \cite{Akhtar2017BacktrackingOptimization} se desarrolló un Algoritmo de Búsqueda Hacia Atrás meta-heurístico (BSA, \textit{Backtracking Search Algorithm}) en un modelo CVRP con el concepto de contenedores inteligentes para encontrar las mejores soluciones de rutas de recolección. El estudio introduce el concepto de Umbral de Nivel de Residuos en contenedores (TWL, \textit{Threshold Waste Level}) para reducir el número que deben ser vaciados al encontrar un rango óptimo de llenado, minimizando así la distancia, y consecuentemente reducir el combustible utilizado y las emisiones de gases.
 
 Ombuki-Berman et al. \cite{Ombuki-Berman2007WASTEALGORITHMS} introduce el enfoque de un Algoritmo Genético multi-objetivo (GA, \textit{Genetic Algorithm}) para el enrutamiento de recolección de basura con ventanas de tiempo, minimizando el número total de vehículos y la distancia recorrida, atendiendo restricciones como capacidad de vehículo, ventanas de tiempo de parada y tiempos de almuerzo de conductores. El mayor potencial del algoritmo genético es que se puede utilizar en problemas prácticos de gran escala, buscando soluciones aproximadas en tiempo polinómico, en lugar de soluciones exactas que resultarían costosas para los de gran escala. Adoptó la definición del problema dado por \cite{Kim2006WasteWindows}, en donde se utilizó un algoritmo VRPTW de recolección de desechos basado en agrupación de nodos.
 
@@ -64,17 +64,33 @@ Otros trabajos de la literatura tratan como un Problema del Vendedor Viajante (T
 
 En \cite{Karadimas2007OptimalAlgorithm} se implementó un Sistema de Colonia de Hormigas (ACS, \textit{Ant Colony System}) para la identificación de rutas óptimas, que fue modelado como un TSP Asimétrico (ATSP, \textit{Asymmetric TSP}) para monitorear, simular, probar, y optimizar costos para diferentes escenarios de la WSM, donde un Sistema de Información Geográfica (GIS, \textit{Geographical Information System}) soporta la WSM usando parámetros como: la ubicación de cestos de basura, topología de red de carreteras, el tráfico relacionado y la densidad poblacional; además se consideran los horarios de recolección y las capacidades de los camiones.
 
-% CARP. Falta extender con otros papers.
-En cuanto a la segunda categoría anteriormente mencionada, CARP, en \cite{Vecchi2016ACollection} se presenta un enfoque secuencial para resolver el problema de optimización de la ruta de camiones recolectores. Se desarrolló un modelo para la solución del CARP, formulado como un Problema de Programación Lineal de Enteros Mixtos (MILP, \textit{Mixed Integer Linear Programming}), y luego se aplicó un algoritmo adaptado de Hierholzer para obtener la secuencia de los arcos. En \cite{Tirkolaee2018ATime} se presentó un interesane MILP para el problema de Enrutamiento de Arco Capacitado Periódico (PCARP, \textit{Periodic Capacitated Arc Routing Problem}) que tiene en cuenta los múltiples viajes, el tiempo de trabajo de los conductores y la tripulación para estudiar los efectos de la demanda incierta, para problemas de gran tamaño se aplicó un algoritmo híbrido basado en un algoritmo heurístico constructivo y un algoritmo de Recocido Simulado (SA, \textit{Simulated Annealing}).
+En cuanto a la segunda categoría anteriormente mencionada, CARP, ha sido abordado por varios trabajos \cite{Vecchi2016ACollection,Tirkolaee2018ATime,Braier2017AnArgentina}. En \cite{Vecchi2016ACollection} se presenta un enfoque secuencial para resolver el problema de optimización de la ruta de camiones recolectores. Se desarrolló un modelo para la solución del CARP, formulado como un Problema de Programación Lineal de Enteros Mixtos (MILP, \textit{Mixed Integer Linear Programming}), y luego se aplicó un algoritmo adaptado de Hierholzer para obtener la secuencia de los arcos. En \cite{Tirkolaee2018ATime} se presentó un interesane MILP para el problema de Enrutamiento de Arco Capacitado Periódico (PCARP, \textit{Periodic Capacitated Arc Routing Problem}) que tiene en cuenta los múltiples viajes, el tiempo de trabajo de los conductores y la tripulación para estudiar los efectos de la demanda incierta, para problemas de gran tamaño se aplicó un algoritmo híbrido basado en un algoritmo heurístico constructivo y un algoritmo de Recocido Simulado (SA, \textit{Simulated Annealing}).
 
 % CPP, RPP, DRPP rural abierto.
-Otro de los grandes problemas de arcos es el conocido como Problema del Cartero Rural (RPP, \textit{Rural Postman Problem}), que consiste en determinar el camino de mínima distancia que recorre solo algunos de los arcos del grafo y representa un problema \textit{NP-hard}, a no ser que el subgrafo formado por los arcos requeridos sea un grafo completamente conexo, en cuyo caso el RPP se reduce al Problema del Cartero Chino (CPP, \textit{Chinese Postman Problem}), para el cual se han definido algoritmos que lo resuelven en un tiempo polinómico \cite{CalvinoM2011CooperacionPanoramica}. 
+Otro de los grandes problemas de arcos es el conocido como Problema del Cartero Rural (RPP, \textit{Rural Postman Problem}), que consiste en determinar el camino de mínima distancia que recorre solo algunos de los arcos del grafo y representa un problema \textit{NP-hard}, a no ser que el subgrafo formado por los arcos requeridos sea un grafo completamente conexo, en cuyo caso el RPP se reduce al Problema del Cartero Chino (CPP, \textit{Chinese Postman Problem}), para el cual se han definido algoritmos que lo resuelven en un tiempo polinómico \cite{CalvinoM2011CooperacionPanoramica}.
 
 En \cite{Braier2017AnArgentina} se plantea un caso particular del RPP abierto Generalizado Dirigido (GDRPP, \textit{Generalized Directed Rural Postman Problem}). Desarrollaron un modelo de Programación de Enteros (IP, \textit{Integer Programming}) con un procedimiento de resolución basado en un algoritmo de mezcla de subtour y la adición de restricciones de eliminación de subtours. Este modelo sirvió de base para la implementación presentada en la siguiente sección.
 
-Varios modelos para la recolección y trasporte de los residuos sólidos han sido desarrollados basados en sistemas informáticos (\textit{software}) apropiados para la optimización de rutas. La herramienta ArcGIS Network Analytics (NA) es utilizada ampliamente en la búsqueda por minimizar la distancia y el tiempo de las rutas actuales de los camiones recolectores \cite{Kallel2016UsingTunisia} \cite{Malakahmad2014SolidMalaysia}. Existen además otras implementaciones comerciales, entre las que se encuentran \textit{MapInfo}, \textit{RouteSmart}, \textit{WasteRoute}, \textit{TransCAD}, \textit{RouteViewPro} mencionados en \cite{Kallel2016UsingTunisia} y \textit{Graphhopper} utilizado en \cite{Lozano2018SmartOptimization}. 
+Varios modelos para la recolección y trasporte de los residuos sólidos han sido desarrollados basados en sistemas informáticos (\textit{software}) apropiados para la optimización de rutas. La herramienta ArcGIS Network Analytics (NA) es utilizada ampliamente en la búsqueda por minimizar la distancia y el tiempo de las rutas actuales de los camiones recolectores \cite{Kallel2016UsingTunisia} \cite{Malakahmad2014SolidMalaysia}. Existen además otras implementaciones comerciales, entre las que se encuentran \textit{MapInfo}, \textit{RouteSmart}, \textit{WasteRoute}, \textit{TransCAD}, \textit{RouteViewPro} mencionados en \cite{Kallel2016UsingTunisia} y \textit{Graphhopper} utilizado en \cite{Lozano2018SmartOptimization}.
 
-En este trabajo se propone el desarrollo de una herramienta que optimice el camino seguido por los vehículos de recolección de basura domiciliaria de la ciudad de Asunción mediante técnicas de programación matemáticas, y consecuentemente, genere beneficios principalmente en los aspectos económicos y ambientales, herramienta denominada de ahora en adelante \textit{TapeYty}, proviene de dos palabras del idioma guaraní, \textit{Tape} que significa camino y \textit{Yty} que significa basura.
+Si bien los sistemas mencionados cumplen con el objetivo de optimizar los recorridos de vehículos, en su mayoría son de código cerrado y no se ajustan a los procedimientos específicos de una institución, resultando mucho más complejo y costoso extender sus funcionalidades. En este trabajo se propone el desarrollo de una herramienta sobre una arquitectura modular e interoperable, que optimice el camino a seguir por los vehículos de recolección de basura domiciliaria de la ciudad de Asunción mediante técnicas de programación matemáticas, y consecuentemente, genere beneficios principalmente en los aspectos económicos con la disminución de la distancia recorrida y en consecuencia el consumo de combustible; y ambientales con la disminución de la emisión de gases que dejan a su paso los camiones debido al menor tiempo de actividad \cite{Vu2018ParameterModel} . La herramienta denominada de ahora en adelante \textit{TapeYty}, proviene de dos palabras del idioma guaraní, \textit{Tape} que significa camino y \textit{Yty} que significa basura.
+
+% Mejorar la eficiencia de recolección al optimizar las rutas de recolección ayuda a reducir el tiempo de recolección, el costo de mano de obra y el consumo de combustible. Las emisiones de los vehículos de recolección también se reducirán y, por lo tanto, ayudarán a disminuir la huella ambiental del sistema de gestión de residuos sólidos. \cite{Vu2018ParameterModel}
+
+% integrar los mismos con los módulos de gestión de la misma tampoco es una solución viable como por ejemplo la recolección de residuos sólidos en zonas de trabajo predefinidas en una ciudad, con funcionalidades particulares como la modificación de características de calles de forma intuitiva según el estado actual de las rutas, manejo de restricciones de giro y generar el recorrido óptimo.
+% Si bien los sistemas mencionados cumplen con el objetivo de optimizar los recorridos de vehículos, en este trabajo se presenta una herramienta que se ajusta a las necesidades específicas para la recolección de residuos sólidos en zonas de trabajo predefinidas en una ciudad, con funcionalidades particulares como la modificación de características de calles de forma intuitiva según el estado actual de las rutas, manejo de restricciones de giro y generar el recorrido óptimo. 
+% La herramienta se implementa sobre una arquitectura modular interoperable con una pila de tecnología escalable, sin embargo muchas veces extender un sistema de código cerrado resulta mucha más complejo.
+% La mayoría de las herramientas mencionadas son software de escritorio, con un alto costo. Es por ello que en este trabajo se ... 
+% internacionalización de la herramienta
+% Que aporta nuestra aplicación sobre las demás:
+% 1. Esta herramienta en la web permite acceder desde cualquier dispositivo a través de cualquier navegador.
+% 2. La aplicación está conectada a una base de datos centralizada, por lo que las modificaciones realizadas por un usuario son reflejadas para todos los demás usuarios conectados.
+% 3. Es una herramienta que se ajusta a las necesidades específicas para la recolección de residuos sólidos urbanos, con funcionalidades específicas como ser la modificación de características de calles de forma intuitiva para generar el recorrido por zonas de recolección. 
+% 4. Manejo de idiomas oficiales del país.
+% 5. Administración de usuarios, vehículos, entre otros, mientras que  otros sistemas no están integrados con módulos de gestión.
+% 6. La herramienta está implementada sobre una arquitectura modular e íntegra(se integran los distintos modulos), pila de tecnología extensible(escalable). Utiliza mecanismos de buen rendimiento para la carga de capas o mapas, y la edición de las mismas es intuitiva y directa.
+
+% En este trabajo se propone el desarrollo de una herramienta que optimice el camino a seguir por los vehículos de recolección de basura domiciliaria de la ciudad de Asunción mediante técnicas de programación matemáticas, y consecuentemente, genere beneficios principalmente en los aspectos económicos y ambientales. La herramienta denominada de ahora en adelante \textit{TapeYty}, proviene de dos palabras del idioma guaraní, \textit{Tape} que significa camino y \textit{Yty} que significa basura.
 
 El resto de este documento está organizado de la siguiente manera. En la Sección II se proporciona una descripción detallada y la formulación del problema, y se describe el enfoque de la solución de mejora del modelo. La Sección III presenta los resultados de los experimentos computacionales y discusiones. Finalmente, la Sección IV se concluye este documento y se analiza posibles futuras investigaciones.
 
@@ -87,6 +103,8 @@ El área de estudio es Asunción, capital y ciudad más poblada de la República
 Para el desarrollo de esta investigación se trabaja estrechamente con la Dirección de Servicios Urbanos (DSU) de la Municipalidad de Asunción, entidad encargada de la regulación y prestación de servicios de aseo, recolección, disposición y tratamiento de los residuos del municipio. El promedio diario normal de basura recogida suele ser entre 800.000 y 900.000 kilos \cite{LaNacion2016AsuncionBasura}.
 
 %Se tiene la cantidad exacta de zonas ahora
+% En la actualidad, el Departamento de Recolección de la DSU es responsable de la recolección de residuos sólidos urbanos y divide la ciudad en 134 zonas para realizar la labor. Como mínimo, debe existir una calle empedrada para que los vehículos recolectores recojan los residuos, éste es el motivo por el que lugares marginales como los barrios denominados ``Bañados Norte y Sur'' no son beneficiados con el servicio.
+
 En la actualidad, el Departamento de Recolección de la DSU es responsable de la recolección de residuos sólidos urbanos y divide la ciudad en 134 zonas para realizar la labor. Como mínimo, debe existir una calle empedrada para que los vehículos recolectores recojan los residuos, éste es el motivo por el que lugares marginales como los barrios denominados ``Bañados Norte y Sur'' no son beneficiados con el servicio.
 
 A continuación se detalla el procedimiento que se lleva a cabo habitualmente para la recolección de los residuos domiciliarios:
@@ -104,28 +122,24 @@ Generalmente, el vehículo tiene capacidad suficiente para realizar un solo viaj
 
 El servicio de recolección domiciliaria se realiza de lunes a sábados, y se divide en tres turnos: mañana, tarde y noche; cada turno tiene una duración máxima de 6 horas debido al carácter insalubre de las tareas realizadas por el personal encargado de brindar el servicio.
 
-En la ``Fig.~\ref{fig:zonasRecoleccion}'' se muestran las zonas de recolección de basura de Asunción, en el que un turno corresponde a un conjunto de ellas. Las zonas pintadas en azul oscuro corresponden al microcentro de Asunción y tienen un tratamiento diferente a las demás, ya que son las únicas que son atendidas de lunes a viernes y sus residuos son recolectados en el turno noche debido al poco tráfico registrado en esas calles en comparación a cualquier otro turno. De igual manera, en las avenidas más importantes de la ciudad también son recolectadas en el turno noche de lunes a viernes. Las demás zonas reciben el servicio cada dos días, tres veces por semana.
+En la ``Fig.~\ref{fig:zonasRecoleccion}'' se muestran las zonas de recolección de basura de Asunción. Las zonas pintadas en celeste corresponden al microcentro de Asunción y tienen un tratamiento diferente a las demás, ya que son las únicas que son atendidas de lunes a viernes y sus residuos son recolectados en el turno noche debido al poco tráfico registrado en esas calles en comparación a cualquier otro turno. De igual manera, en las avenidas más importantes de la ciudad también son recolectadas en el turno noche de lunes a viernes. Las demás zonas reciben el servicio cada dos días, tres veces por semana.
 
 Los residuos sólidos de grandes generadores son todos aquellos residuos sólidos urbanos comerciales cuyas cantidades requieran una recolección diferenciada, esta recolección no forma parte del procedimiento descrito más arriba y tampoco se incluye en el alcance de este trabajo. Los residuos hospitalarios son recolectados por una empresa tercerizada por el municipio y no son depositados en Cateura.
 
-En la actualidad, los choferes de los vehículos recolectores de basura de la ciudad de Asunción trazan los caminos a seguir en base a su experiencia, razón por la cual es necesario optimizar el recorrido realizado para la recolección de residuos, reduciendo el costo y el tiempo de cada recorrido. A su vez, permite a la DSU gestionar de manera eficiente esos recorridos a través de una aplicación, que permite actualizar el estado de las calles de la ciudad, es decir, dando información sobre la posibilidad o no de ser transitada por el vehículo recolector.
+En la actualidad, los choferes de los vehículos recolectores de basura de la ciudad de Asunción trazan los caminos a seguir en base a su experiencia, razón por la cual es necesario optimizar el recorrido realizado para la recolección de residuos, reduciendo el costo y el tiempo de cada recorrido. Se propone desarrollar una aplicación que permita gestionar de manera eficiente esos recorridos al poder actualizar el sentido de las calles, inhabilitar calles, agregar restricciones de giro o de continuar el sentido (contramano).
 
-% Mapa de asunción dividido en zonas de recolección
-\begin{figure}[htbp]
-\centerline{\includegraphics{imagenes/Recoleccion-ZONAS&CUADRANTES.png}}
+% Mapa de Asunción dividido en zonas de recolección
+\begin{figure}[tbp]
+\centerline{\includegraphics[width=8.5cm]{imagenes/Recoleccion-ZONAS_CUADRANTES.png}}
 \caption{División de la ciudad en zonas. Un turno en el mapa está correspondido por un conjunto de zonas coloreadas del mismo color. [Fuente: Departamento de Recolección de la DSU].}
 \label{fig:zonasRecoleccion}
 \end{figure}
 
 \subsection{Colección de Datos}
 
-% El estudio de caso actual se trata  refiere a una de las diez rutas de recolección en el distrito de la ciudad de El Habib, ciudad de Sfax (Figura 1). 
-% El enfoque para optimizar el sistema de recopilación se basa en el SIG, que proporciona un medio eficaz para importar, gestionar y analizar datos espaciales. 
-% La metodología seguida en este trabajo consiste principalmente en tres procedimientos (Figura X): el diseño de una base de datos espacial y el análisis de los resultados.
-
 En la ``Fig.~\ref{fig:metodologia}'' se muestra la metodología seguida en este trabajo: la recolección de datos, el modelado matemático, la implementación de la herramienta \textit{TapeYty}, el despliegue de la ruta óptima y por último el análisis de los resultados.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 \centerline{\includegraphics[width=9.5cm]{imagenes/DiagramaDeMetodologia.png}}
 \caption{Procedimientos de la metodología.}
 \label{fig:metodologia}
@@ -139,24 +153,24 @@ La delimitación de las zonas de recolección fue proveída por la DSU a través
 
 \subsection{Modelo matemático}
 
-Como resultado de una extensa revisión del estado del arte, se utiliza la solución propuesta por \cite{Braier2017AnArgentina} para optimizar el enrutamiento de vehículos recolectores de residuos domiciliarios de la ciudad de Asunción. Este modelo se selecciona debido a las similitudes con el caso de estudio de este trabajo, entre ellas es posible citar:
+Como resultado de la revisión del estado del arte, se utiliza la solución propuesta por Braier et al. \cite{Braier2017AnArgentina} para optimizar el enrutamiento de vehículos recolectores. Este modelo se selecciona debido a las similitudes con el caso de estudio de este trabajo, entre ellas es posible citar:
 
 \begin{itemize}
     \item División de la ciudad en sectores y recolección casa por casa: La situación es muy similar, ya que el procedimiento consiste en recoger los residuos domiciliarios casa por casa, debiendo cubrir todas las calles de un conjunto de cuadras o manzanas, denominadas zonas.
     \item Tamaño de problema: Una zona de recolección abarca en promedio el mismo número (entre 40 y 80 cuadras aproximadamente), que representa un número aceptable para la solución utilizada.
-    \item Calles, carreteras, caminos: La ciudad de Morón presenta caminos con particularidades muy comunes a otras sudamericanas como la de Asunción: calles sin salida, calles estrechas, peatonales, giros prohibidos, entre otros.
+    \item Calles, carreteras, caminos: el trabajo \cite{Braier2017AnArgentina} tomó como caso de estudio la ciudad de Morón el cuál presenta caminos con particularidades muy comunes a otras sudamericanas como la de Asunción: calles sin salida, calles estrechas, peatonales, giros prohibidos, entre otros.
 \end{itemize}
 
 Además, la falta de datos relacionados con la cantidad de toneladas recolectadas por zonas fue otro de los principales motivos por el cual se seleccionó un problema de ruta cuya demanda se encuentra sobre los arcos (calles que deben ser visitadas), y además no posea restricciones de capacidad.
 
-Así, como en la ciudad de Morón, cada zona de recolección de la ciudad de Asunción es representada por un grafo mixto $H$, cuyos nodos representan las esquinas de las calles en la zona, y los arcos son los segmentos de calles que corren entre dos intersecciones consecutivas. Las calles de un único sentido están representadas por arcos dirigidos y las calles finas de doble sentido por arcos no dirigidos, ya que ambos lados de la calle pueden ser servidos en un solo viaje. En el caso de calles anchas de doble sentido, como las avenidas, cada lado debe ser servido de forma separada, por lo que estas calles se representan con dos arcos dirigidos, una en cada sentido.
+Cada zona de recolección de la ciudad de Asunción es representada por un grafo mixto $H$ \cite{Braier2017AnArgentina}, cuyos nodos representan las esquinas de las calles en la zona, y los arcos son los segmentos de calles que corren entre dos intersecciones consecutivas. Las calles de un único sentido están representadas por arcos dirigidos y las calles finas de doble sentido por arcos no dirigidos, ya que ambos lados de la calle pueden ser servidos en un solo viaje. En el caso de calles anchas de doble sentido, como las avenidas, cada lado debe ser servido de forma separada, por lo que estas calles se representan con dos arcos dirigidos, una en cada sentido.
 
-Para incorporar las restricciones de regulación de tráfico se construye un grafo dirigido $G$ desde el grafo $H$. El grafo $H$ es expandido dividiendo cada nodo en varios nuevos nodos representando todas las formas en las que se puede llegar y salir de la esquina en cuestión. En la ``Fig.~\ref{fig:grafo_expandido}(a)'' se puede observar un nodo en el grafo original $H$ antes de su expansión, y en la ``Fig.~\ref{fig:grafo_expandido}(b)'' el nodo que ha sido expandido en seis nuevos nodos, representando cada posible entrada y salida del nodo. Los arcos auxiliares dirigidos son agregados y conectan los nuevos nodos, representando así las transiciones permitidas de una esquina a otra. 
-%Agregar lo de la banda perimetral?%
+Para incorporar las restricciones de regulación de tráfico se construye un grafo dirigido $G$ desde el grafo $H$. El grafo $H$ es expandido dividiendo cada nodo en varios nuevos nodos representando todas las formas en las que se puede llegar y salir de la esquina en cuestión. En la ``Fig.~\ref{fig:grafo_expandido}(a)'' se puede observar un nodo en el grafo original $H$ antes de su expansión, y en la ``Fig.~\ref{fig:grafo_expandido}(b)'' el nodo que ha sido expandido en seis nuevos nodos, representando cada posible entrada y salida del nodo. Los arcos auxiliares dirigidos son agregados y conectan los nuevos nodos, representando así las transiciones permitidas de una esquina a otra.
 
 El modelo de programación entera propuesto por \cite{Braier2017AnArgentina} está definido de la siguiente manera:
 
 \subsubsection{Conjuntos y Parámetros}
+\label{sec:conjunto-parametros}
 
 \begin{itemize}
 \item $G(V, A)$: Grafo dirigido en el que los nodos V corresponden a todas las alternativas posibles para llegar a las esquinas de las intersecciones y A está compuesto por arcos que se pueden atravesar en una sola dirección específica.
@@ -174,7 +188,7 @@ El modelo de programación entera propuesto por \cite{Braier2017AnArgentina} est
 
 El problema de ruteo es una versión particular del problema del cartero rural abierto dirigido, ya que el arco $i j \in E $ determina el grupo de arcos $L_{i j} = \{i j, j i\}$, en el que al menos uno de ellos debe ser atravesado en la solución final y además se busca un camino cuyo nodo inicial y final no se especifican.
 
-\begin{figure}[htbp]
+\begin{figure}[tbp]
 \centerline{\includegraphics[width=9.5cm]{imagenes/expanded_graph.png}}
 \caption{Expansión de un cruce entre una calle de sentido único y una calle de doble sentido. (a) Grafo mixto original. (b) Grafo dirigido luego de la expansión, los arcos auxiliares están representados por líneas discontinuas. \cite{Braier2017AnArgentina}}
 \label{fig:grafo_expandido}
@@ -273,31 +287,47 @@ s_i + \sum_{j: j i \in A} x_{j i} = \sum_{j: i j \in A} x_{i j} + t_i \\
 La función objetivo busca minimizar el costo total de la ruta de recolección de residuos. El costo en este trabajo se refiere a la distancia recorrida por el vehículo recolector. La restricción (\ref{eq1}) impone que todos los arcos de único sentido deben ser visitados al menos una vez, la (\ref{eq2}) requiere que los arcos no dirigidos sean atravesados al menos una vez en cualquier sentido. Las restricciones (\ref{eq3a}) y (\ref{eq3b}) aseguran que la solución encontrada es realmente un camino agregando la condición de conservación de flujo estándar a cada nodo. Las restricciones (\ref{eq4}) y (\ref{eq5}) garantizan que el nodo inicial y final sean únicos. Las restricciones (\ref{eq1})-(\ref{eq5}) permiten la formación de subtours, la restricción (\ref{eq6}) es el estándar de eliminación de subtours. Las restricciones (\ref{eq7})-(\ref{eq9}) especifican los valores posibles para las variables del modelo.
 
 \subsubsection{Algoritmo de solución}
+\label{algoritmo-solucion}
+En el modelo dado en la sección \ref{sec:conjunto-parametros} se puede observar la restricción de eliminación de subtours la cual es muy costosa en la generación de la mismas como también en  la complejidad del problema. En este contexto la estrategia propuesta en \cite{Braier2017AnArgentina} se basa en tratar de obtener una solución rápidamente sin considerar el problema de subtour e ir agregando las restricciones sucesivamente, esto se conoce como técnica de agregación dinámica de restricciones a un modelo relajado.
+
+Los siguientes pasos detallan la estrategia:
+
 \begin{enumerate}
-\item Crear el modelo relajado $M: = (\ref{eq1}) - (\ref{eq5}) y (\ref{eq7}) - (\ref{eq9})$
+\item Crear el modelo relajado $M: = (\ref{eq1}) - (\ref{eq5})$ y $(\ref{eq7}) - (\ref{eq9})$
 \item Resolver $M$
 \item Si no se puede encontrar ninguna solución para $M$, retornar ``infactible'' y parar
 \item Si los subtours pueden ser mezclados con el tour que contiene el nodo inicial y final, entonces mezclarlos, retornar la solución obtenida y parar.
 \item De lo contrario, agregar a $M$ la restricción de eliminación de subtour estándar (6) por cada subtour en la solución y regresar al paso 2.
 \end{enumerate}
 
-En el algoritmo propuesto por \cite{Braier2017AnArgentina} se combina la técnica de mezcla con la técnica de agregación dinámica de restricciones que eliminan los subtours.
 \subsection{Método de secuenciación}
 
-En esta investigación se realiza una búsqueda en profundidad para obtener la secuencia a seguir a partir del resultado del problema descrito en la sección anterior. El algoritmo toma como entrada el nodo inicial, nodo final y la cantidad de veces que se atraviesa por cada arco del grafo $G$. Se describe a continuación los pasos del algoritmo:
+En este trabajo se realiza una búsqueda en profundidad para obtener la secuencia a seguir a partir del resultado del problema descrito en la sección anterior. El algoritmo toma como entrada el nodo inicial, nodo final y la cantidad de veces que se atraviesa por cada arco del grafo $G$. Se describe a continuación los pasos del algoritmo:
 
 \begin{enumerate}
 \item Leer el grafo $N$ resultante del GDRPP abierto. 
 \item Nodo inicial es Nodo siguiente.
-\item La secuencia es un vector vacío
-\item secuencia es igual a la secuencia + nodo siguiente
-\item si el nodo siguiente es igual al nodo final y ya se atravesaron todos los arcos la cantidad de veces especificada en el resultado, entonces se tiene el resultado final 
-\item Sino, tomar un nodo sucesor del nodo siguiente en $N$, es decir, el nuevo nodo siguiente, que aún no haya sido tenido en cuenta la cantidad máxima de veces que se especifique en el resultado y volver al paso 2
+\item La secuencia es un vector vacío.
+\item secuencia es igual a la secuencia + nodo siguiente.
+\item si el nodo siguiente es igual al nodo final y ya se atravesaron todos los arcos la cantidad de veces especificada en el resultado, entonces se tiene el resultado final.
+\item Sino, tomar un nodo sucesor del nodo siguiente en $N$, es decir, el nuevo nodo siguiente, que aún no haya sido tenido en cuenta la cantidad máxima de veces que se especifique en el resultado y volver al paso 2.
 \end{enumerate}
+
+\subsection{Ejemplo Numérico}
+A continuación se describe un ejemplo simple de como la aplicación produce la secuencia del camino a seguir desde el resultado generado por la programación matemática.
+
+El Paso 1 de la ``Fig.~\ref{fig:PasosSolucion}'' muestra los datos de salida que genera el modelo matemático (Algoritmo  de  solución, sección \ref{algoritmo-solucion}) desde un resultado factible. La salida contiene todos los segmentos que son utilizados como solución, junto con el número de veces que se recorre cada uno de ellos, así como también despliega los nodos que resultaron elegidos como nodo inicial y nodo final del recorrido. Posteriormente, con estos datos se procede a crear un grafo dirigido con la cantidad total de arcos resultantes (Paso 2). El grafo generado pasa a formar parte de la entrada para obtener la secuencia del camino a seguir (Paso 3). Por último, el algoritmo de secuenciación resuelve y genera como salida la secuencia de arcos del algoritmo de optimización.
+
+\begin{figure*}[htbp]
+\centerline{\includegraphics[width=\textwidth]{imagenes/pasos_de_solucion.png}}
+\caption{Pasos de solución para obtener la secuencia del camino del vehículo recolector en una zona.}
+\label{fig:PasosSolucion}
+\end{figure*}
 
 \subsection{Solución propuesta}
 
-En la actualidad, la DSU no cuenta con un \textit{software} que apoye a la toma de decisiones en lo que respecta a la gestión de residuos sólidos urbanos, más específicamente en el área de recolección. Por lo tanto, se propone la implementación de una herramienta GIS que contribuya con la elección de mejores caminos a seguir por los vehículos recolectores, y de esta manera generar mayores beneficios en cuanto a tiempo y distancia, además de contribuir con el cuidado del medio ambiente.
+En la actualidad, la Dirección de Servicios Urbanos (DSU) de la ciudad de Asunción no cuenta con un \textit{Software} que apoye a la toma de decisiones en lo que respecta a la gestión de residuos sólidos urbanos, más específicamente en el área de recolección. Por lo tanto, se propone la implementación de una herramienta GIS que contribuya con la elección de mejores caminos a seguir por los vehículos recolectores, y de esta manera generar mayores beneficios en cuanto a tiempo y distancia, además de garantizar que el servicio sea brindado a todos los domicilios.
+%además de contribuir con el cuidado del medio ambiente.
 
 La ``Fig.~\ref{fig:disenhoArquitectura}'' muestra el diseño de la arquitectura de \textit{software} alrededor de la aplicación solución \textit{TapeYty}. Este diseño se divide en dos partes que se explicarán en detalle a continuación.
 
@@ -309,14 +339,20 @@ La implementación se puede resumir en los siguientes módulos:
 \begin{enumerate}
     \item Seguridad: El sistema comprende un mecanismo de autenticación basada en tokens JWT (\textit{JSON Web Tokens}). Se restringe acceso a la aplicación y a los servicios REST del servidor no autenticados.
     \item Administración: Comprende la gestión (listar, agregar, editar, eliminar) de usuarios, vehículos, conductores en la aplicación.
-    \item GIS: Este módulo despliega el mapa con las diferentes capas (zona, calle, departamento, distrito) y permite el manejo de capas, la gestión de calles, generación de rutas, despliegue de resultado de ruta optimizada.
+    \item GIS: Este módulo despliega el mapa con las diferentes capas (zona, calle, departamento, distrito) y permite el manejo de capas, la gestión de calles, generación de rutas, despliegue de resultado de ruta optimizada (Ver ``Fig.~\ref{fig:aplicacionRutas}'').
 \end{enumerate}
 
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=8cm]{imagenes/TapeYtyArchitectureDesign.png}}
+\begin{figure}[tbp]
+\centerline{\includegraphics[width=8cm]{imagenes/20190424_WebAppArchitectureDesign.png}}
 \caption{Diseño de arquitectura de \textit{TapeYty}.}
 \label{fig:disenhoArquitectura}
 \end{figure}
+
+\begin{figure*}[tbp]
+\centerline{\includegraphics[width=\textwidth]{imagenes/20190426_Aplicacion_Rutas.png}}
+\caption{Edición de un segmento de calle en la aplicación \textit{TapeYty}.}
+\label{fig:aplicacionRutas}
+\end{figure*}
 
 \subsubsection{Servidor}
 
@@ -342,10 +378,11 @@ En esta sección se presenta un análisis de los resultados obtenidos con \texti
 La ``Fig.~\ref{fig:RecorridoActualZona83}'' muestra el camino trazado por el GPS instalado en el vehículo recolector 129 en la zona 83 de trabajo. Se puede observar que varios segmentos de calles son atravesados repetidas veces. La distancia total recorrida fue de 16.940 km. En la práctica, los recolectores suelen acumular las bolsas de basura de varias casas en una esquina, evitando que el conductor entrase a ciertas calles. Lastimosamente no se puede asegurar que dichos segmentos hayan recibido el servicio. Las avenidas de color naranja, que delimitan la zona, no forman parte de la recolección, pero de igual manera algunos segmentos de estas avenidas fueron utilizadas para poder acceder a las calles que si deben ser cubiertas por el servicio.
 Por otra parte, en la ``Fig.~\ref{fig:RecorridoTapeYtyZona83}'' se muestra el camino generado por \textit{TapeYty}, tiene una cobertura total de las calles que deben ser visitadas en la zona. La secuencia se encuentra especificada en los segmentos. La metodología de trabajo se mantiene de acuerdo con lo establecido por la DSU como en la ``Fig.~\ref{fig:RecorridoActualZona83}'', y por lo tanto, la misma delimitación de zonas.
 Las calles sin salida, las estrechas y las que limitan una zona pero que no deben ser visitadas necesariamente son gestionadas mediante \textit{TapeYty}. En el módulo de mapas de la aplicación el usuario tiene la posibilidad de modificar propiedades de las calles como ser el sentido, si se encuentra habilitada, o si es obligatorio brindar el servicio a un segmento de calle determinado. Por ejemplo, en la ``Fig.~\ref{fig:RecorridoTapeYtyZona83Opcionales}'' ciertos segmentos de calles pasan a ser opcionales para el paso de camiones simulando el procedimiento llevado a cabo por el equipo de recolección (``Fig.~\ref{fig:RecorridoActualZona83}'').
+
 % Algunos recorridos generados por la aplicación pueden contener segmentos de calles que no pertenezcan a la zona seleccionada debido a que los segmentos de sentido único en los límites de zonas requiere de un buffer para incluir calles aledanhas produce un resultado infactible.
 Algunas zonas tienen varios segmentos de calles de un único sentido, y si solo se utilizan los segmentos dentro de la zona, el resultado podría resultar infactible computacionalmente o más costoso en distancia, por ello se agrega una banda perimetral, tal como en \cite{Braier2017AnArgentina}, de 220 metros representada como arcos auxiliares. Esta situación es común en la práctica actual de la recolección de residuos.
 
-\begin{figure*}[!tbp]
+\begin{figure*}[htbp]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
     \includegraphics[width=\textwidth]{imagenes/recorrido83Actual.png}
@@ -366,7 +403,7 @@ Algunas zonas tienen varios segmentos de calles de un único sentido, y si solo 
   \caption{Recorridos de la zona 83.}
 \end{figure*}
 
-En el cuadro \ref{table:comparacionZona83} se presenta el análisis realizado sobre la zona 83, los experimentos se ejecutan en una computadora personal con procesador Intel\textcopyright{}  Core\texttrademark{} i5 2.3 GHz, 7.7Gb de RAM, disco SSD y el sistema operativo Linux Mint en su version 18.3 Cinnamon 64-bit. En la primera columna se detallan las características de la zona, la segunda columna se refiere al escenario en el que todos los segmentos de calles deben ser visitados por el vehículo recolector y en la tercera columna se refiere al escenario en el que 5 segmentos de calles de sentido único y 3 de doble sentido fueron marcados como opcionales desde la aplicación. Ambos escenarios coinciden en la cantidad de vértices en el grafo, cantidad de calles de sentido único y de doble sentido, no así en la cantidad de arcos auxiliares, debido a la cantidad de segmentos opcionales. En el primer escenario es posible resolver mediante la técnica de mezcla de subtours recién en la tercera iteración, mientras que en el segundo se puede resolver con la misma técnica ya en la primera iteración, por ello se observa que el tiempo de ejecución del modelo es levemente menor para el segundo escenario. Realizar la expansión del grafo a partir de los datos de entrada es el paso que requiere de mayor tiempo en la aplicación. En ambos escenarios se redujo la distancia con respecto al recorrido actual, en el primero en un 20.31\%  y en el segundo un 26.31\%, 3.44105 km. y 4.45612 km. menos respectivamente.
+En el cuadro \ref{table:comparacionZona83} se presenta el análisis realizado sobre la zona 83, los experimentos se ejecutan en una computadora personal con procesador Intel\textcopyright{}  Core\texttrademark{} i5 2.3 GHz, 7.7Gb de RAM, disco SSD y el sistema operativo Linux Mint en su version 18.3 Cinnamon 64-bit. En la primera columna se detallan las características de la zona, la segunda columna se refiere al escenario en el que todos los segmentos de calles deben ser visitados por el vehículo recolector y en la tercera columna se refiere al escenario en el que 5 segmentos de calles de sentido único y 3 de doble sentido fueron marcados como opcionales desde la aplicación. Ambos escenarios coinciden en la cantidad de vértices en el grafo, cantidad de calles de sentido único y de doble sentido, no así en la cantidad de arcos auxiliares, debido a la cantidad de segmentos opcionales. En el primer escenario es posible resolver mediante la técnica de mezcla de subtours recién en la tercera iteración, mientras que en el segundo se puede resolver con la misma técnica ya en la primera iteración, por ello se observa que el tiempo de ejecución del modelo es levemente menor para el segundo escenario. Realizar la expansión del grafo a partir de los datos de entrada es el paso que requiere de mayor tiempo en la aplicación. En ambos escenarios se redujo la distancia con respecto al recorrido actual, en el primero en un 20.31\%  y en el segundo un 26.31\%, con 3.44105 km. y 4.45612 km. menos respectivamente.
 
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
@@ -392,19 +429,18 @@ Mejor con respecto al actual (\%) & 20.31                    & 26.31            
 
 \section{Conclusión}
 
-En ciudades similares a Asunción, el trayecto seguido por el conductor del vehículo de recolección de basura se basa en su propia intuición y experiencia debido a la falta de herramientas que ayuden a la toma de decisiones. Constantemente, las calles de Asunción sufren modificaciones como cambios de sentido, inhabilitación por diversos motivos; lo cual requiere de un sistema flexible a estos cambios y pueda generar la ruta a seguir que contraste con la realidad del momento. En este documento, se propone un diseño de aplicación GIS cuyo principal objetivo es brindar el camino óptimo que debe seguirse para la recolección de residuos sólidos en las zonas actuales.
+En ciudades en vías de desarrollo como Asunción el trayecto seguido por el conductor del vehículo de recolección de basura se basa en su propia intuición y experiencia debido a la falta de herramientas que ayuden a la toma de decisiones. Constantemente, las calles de Asunción sufren modificaciones como cambios de sentido, inhabilitación por diversos motivos; que requiere de un sistema flexible a estos cambios y pueda generar la ruta a seguir que contraste con la realidad del momento. Se propone un diseño de aplicación GIS cuyo principal objetivo es brindar el camino óptimo que debe seguirse para la recolección de residuos sólidos en las zonas actuales.
 
 Esta arquitectura propuesta tiene un factor muy relevante que es la escalabilidad al ofrecer componentes desacoplados, ya que se utilizan servicios Web REST, servicios web de mapas como \textit{TMS}, y \textit{fameworks} MVC. La metodología de trabajo en la DSU se ajusta al problema del cartero rural abierto, en este trabajo se utiliza la solución propuesta por \cite{Braier2017AnArgentina}, cuya salida representa los datos de entrada a la solución de secuenciación que finalmente se despliega en la aplicación GIS.
 
-Como resultado general, la DSU podrá contar con una aplicación que garantice que todos los ciudadanos que residen e ingresan diariamente reciban el servicio de recolección de basura. Notamos que aunque se mantenga el procedimiento de recolección, la distancia del recorrido es mejorada en un 21\% en la zona 83, se observa que mediante el uso de la aplicación se puede reducir el número de veces que se pasa por los mismos segmentos de calles, además se garantiza que todos los segmentos serán cubiertos por la recolección.
+La Dirección de Servicios Urbanos podrá contar con una aplicación que garantice que todos los ciudadanos que residen e ingresan diariamente a la ciudad reciban el servicio de recolección de basura. Se evidencia que aunque se mantenga el procedimiento de recolección, la distancia del recorrido es mejorada y se observa que mediante el uso de la aplicación es posible reducir el número de veces que se pasa por los mismos segmentos de calles, además se garantiza que todos los segmentos serán cubiertos por la recolección.
 
-Para futuras sugerencias de trabajo, crear una mesa de trabajo con la DSU para estudiar si conviene reorganizar las zonas de trabajo, en caso de que fuese necesario reorganizarlas, analizar la factibilidad de seguir utilizando la solución en este trabajo, en caso de que no sea factible seguir utilizando un modelo exacto, incorporar una heurística al diseño de la propuesta.
+Los autores proponen crear una mesa de trabajo con la Dirección de Servicios Urbanos para estudiar la conveniencia de reorganizar las zonas de trabajo, también aprovechar la escalabilidad de la arquitectura implementada para agregar la gestión de residuos de grandes generadores, los llamados residuos de manejo especial, generados en los procesos productivos e instalaciones industriales y comerciales.
+
+% analizar la factibilidad de seguir utilizando la solución en este trabajo, en caso de que no sea factible seguir utilizando un modelo exacto, incorporar una heurística al diseño de la propuesta.
 
 % Para futuras sugerencias de trabajo, el parámetro de demanda se puede considerar incierto en el modelo y las otras metaheurísticas como la optimización de colonias de hormigas y el algoritmo genético se pueden probar para resolver el problema como un rival para SA.
-% Para futuras sugerencias de trabajo
-
 % El ingreso promedio de personas en ómnibus del transporte público y vehículos privados de los municipios aledaños, es alrededor de 1.320.000 a diario \cite{DiarioABCColor2016PorColor}, es así que no sólo los ciudadanos que residen en la ciudad de Asunción serán beneficiados con un servicio más eficiente, sino las miles de personas, que ingresan diariamente a la ciudad, ya que al reducir el tiempo del vehículo recolector en tránsito se reduce el tráfico generado por los mismos y los problemas de contaminación por los líquidos y gases que dejan a su paso.
-
 % Este proceso permitirá al personal encargado de la recolección de residuos agilizar su trabajo ya que pasarán menos tiempo en el vehículo recolector, mejorando así su calidad de vida.
 \section*{Agradecimientos}
 

@@ -113,7 +113,7 @@ A continuación se detalla el procedimiento que se lleva a cabo habitualmente pa
 \item El equipo vuelve al punto de partida una vez vaciado el vehículo recolector.  
 \end{itemize}
 
-En general, el vehículo tiene capacidad suficiente para realizar un solo viaje de su zona a Cateura, pero si no es el caso, debe realizar la cantidad de viajes necesarios hasta recolectar todos los residuos domiciliarios de la zona en cuestión. La carga máxima admitida de un vehículo recolector en circulación por el Departamento de Recolección de la DSU es de 8.500 kilogramos (kg). En caso de que el equipo de trabajo estime, en base a su experiencia, que la cantidad total a recoger de la zona será mayor a la permitida, entonces realizará más de un viaje a Cateura.
+En general, el vehículo tiene capacidad suficiente para realizar un solo viaje de su zona a Cateura, pero si no es el caso, debe realizar la cantidad de viajes necesarios hasta recolectar todos los residuos domiciliarios de la zona en cuestión. La carga máxima admitida de un vehículo recolector en circulación por el Departamento de Recolección de la DSU es de 8500 kilogramos (kg). En caso de que el equipo de trabajo estime, en base a su experiencia, que la cantidad total a recoger de la zona será mayor a la permitida, entonces realizará más de un viaje a Cateura.
 
 El servicio de recolección domiciliaria se realiza de lunes a sábados, y se divide en tres turnos: mañana, tarde y noche; cada turno tiene una duración máxima de 6 horas debido al carácter insalubre de las tareas realizadas por el personal encargado de brindar el servicio.
 
@@ -325,11 +325,11 @@ La ``Fig.~\ref{fig:disenhoArquitectura}'' muestra el diseño de la arquitectura 
 Desde una computadora portátil o un teléfono móvil el usuario puede acceder a la aplicación e ingresar con sus credenciales desde el navegador (\textit{browser}). Se ejecuta en el navegador el código Javascript generado a partir del código fuente construido con el marco (\textit{framework}) Angular (versión 7.0) \cite{Angular}. Angular es un \textit{framework} ampliamente utilizado para el desarrollo de aplicaciones web con excelentes prestaciones en cuanto a rendimiento, escalabilidad, velocidad de respuesta y cuenta con una comunidad numerosa y activa. Una de las librerías incorporadas al proyecto cliente más relevante para el trabajo es Mapbox GL JS \cite{MapboxJS}, la cual ofrece funcionalidades relacionadas a mapas en el lado cliente, teniendo como gran atractivo su buen desempeño durante el tiempo de renderizado de los mapas y datos geográficos.
 
 La implementación se puede resumir en los siguientes módulos:
-\begin{enumerate}
+\begin{itemize}
     \item Seguridad: El sistema comprende un mecanismo de autenticación basada en tokens JWT (\textit{JSON Web Tokens}). Se restringe acceso a la aplicación y a los servicios REST del servidor no autenticados.
     \item Administración: Comprende la gestión (listar, agregar, editar, eliminar) de usuarios, vehículos, turnos.
     \item GIS: Este módulo despliega el mapa con las diferentes capas (zona, calle, departamento, distrito) y permite el manejo de capas, la gestión de calles pudiendo actualizar el sentido de las mismas, inhabilitarlas (``Fig.~\ref{fig:tapeYtyCalles}''), agregar restricciones de giro o de continuar el sentido (contramano) (``Fig.~\ref{fig:tapeYtyRestricciones}''), generación de rutas, despliegue de resultado de ruta optimizada (``Fig.~\ref{fig:RecorridoTapeYtyZona83Opcionales}''), entre otros.
-\end{enumerate}
+\end{itemize}
 
 \begin{figure*}[htbp]
   \centering
@@ -356,7 +356,7 @@ La implementación se puede resumir en los siguientes módulos:
 
 El lado servidor presenta mayor complejidad ya que concentra varios componentes que además deben interactuar unos con otros.
 
-Como parte de la solución, se utiliza PostgreSQL (versión 9.6) con su extensión PostGIS, donde están almacenadas las distintas informaciones obtenidas, geográficas o no, excepto los datos (\textit{shapes}) que provienen del SNC de Paraguay.
+Como parte de la solución, se utiliza PostgreSQL (v10.8) con su extensión PostGIS (v2.4), donde están almacenadas las distintas informaciones obtenidas, geográficas o no, excepto los datos (\textit{shapes}) que provienen del SNC de Paraguay.
 
 El servidor de mapas GeoServer \cite{GeoServer} consiste en un servidor de código abierto que permite a los usuarios compartir y editar datos espaciales. En él se almacenan los mapas de Departamentos y Distritos del Catastro Nacional. Además, se crea una conexión con la base de datos para poner a disposición los mapas de calles y zonas, en modo lectura, donde el servidor ofrece servicios web de mapas como por ejemplo \textit{TMS} (\textit{Tile Map Service}), servicio que maneja estrategias de caché de cuadros de imágenes para mostrar los mapas con mayor velocidad dando un mejor rendimiento a la aplicación.
 
